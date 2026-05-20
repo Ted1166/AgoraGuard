@@ -1,0 +1,113 @@
+{"level":"info","message":"╔══════════════════════════════════════════════╗","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"║           AgoraGuard Agent starting          ║","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"║   Risk-gated AI trading agent on Arc         ║","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"╚══════════════════════════════════════════════╝","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"Cycle interval : 30s","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"AI enabled     : true","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"Assets         : BTCUSDT, ETHUSDT, EURUSDT","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"Identity › Registering agent 0x2ec236a1... on ERC-8004","timestamp":"2026-05-20 16:42:09"}
+{"level":"info","message":"Identity › isRegistered check failed — attempting registration anyway","timestamp":"2026-05-20 16:42:10"}
+{"error":"ContractFunctionExecutionError: The contract function \"registerAgent\" reverted.\n\nContract Call:\n  address:   0x8004A818B","level":"warn","message":"Identity › Registration skipped (non-fatal)","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"\n════════════════════════════════════════════════════════════","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"AgoraGuard cycle #1 starting...","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"═══ Monitor cycle starting ═══","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"Monitor › fetching market snapshot from Binance...","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x3600000000000000000000000000000000000000","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"Monitor › reading Arc chain state...","timestamp":"2026-05-20 16:42:14"}
+{"level":"info","message":"Monitor › BTCUSDT $77049.17 spread 0bps  24h 0.28%","timestamp":"2026-05-20 16:42:15"}
+{"level":"info","message":"Monitor › ETHUSDT $2120.27 spread 0bps  24h 0.11%","timestamp":"2026-05-20 16:42:15"}
+{"level":"info","message":"Monitor › EURUSDT $1.16 spread 1bps  24h -0.13%","timestamp":"2026-05-20 16:42:15"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:42:15"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x3600000000000000000000000000000000000000 — baseline safe","timestamp":"2026-05-20 16:42:15"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:42:15"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a — baseline safe","timestamp":"2026-05-20 16:42:15"}
+{"level":"info","message":"Monitor › block=43185323 wallets=1 verifiedThreats=0","timestamp":"2026-05-20 16:42:16"}
+{"level":"info","message":"Guards › BTCUSDT → CLEAR | drawdown=0.00% atr=0.95× rsi=55 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:42:16"}
+{"level":"info","message":"Brain › deciding for BTCUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:42:16"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, neutral RSI 55, low ATR 0.95x, positive momentum +0.276%. Conservative 15% position with 3% SL.\"","timestamp":"2026-05-20 16:42:20"}
+{"level":"info","message":"Executor › BTCUSDT CLEAR → BUY 15.00% | CLEAR verdict, neutral RSI 55, low ATR 0.95x, positive momentum +0.276%. Conservative 15% position with 3% SL.","timestamp":"2026-05-20 16:42:20"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0x11da75bf417494438791e00be277439be2d1890e305c676ca73276725cd4330c","timestamp":"2026-05-20 16:42:24"}
+{"level":"info","message":"Cycle › BTCUSDT done | oracle=0x11da75bf protections=0","timestamp":"2026-05-20 16:42:24"}
+{"level":"info","message":"Guards › ETHUSDT → CLEAR | drawdown=0.00% atr=0.91× rsi=56 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:42:24"}
+{"level":"info","message":"Brain › deciding for ETHUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:42:24"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, ETH +11.2% momentum, RSI neutral at 56, low ATR suggests stable conditions. Conservative 15% position with tight risk management.\"","timestamp":"2026-05-20 16:42:28"}
+{"level":"info","message":"Executor › ETHUSDT CLEAR → BUY 15.00% | CLEAR verdict, ETH +11.2% momentum, RSI neutral at 56, low ATR suggests stable conditions. Conservative 15% position with tight risk management.","timestamp":"2026-05-20 16:42:28"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0xb18168eec6080c549363db611497e8e4e84524060f3c89b97cc406118c8a7c8a","timestamp":"2026-05-20 16:42:31"}
+{"level":"info","message":"Cycle › ETHUSDT done | oracle=0xb18168ee protections=0","timestamp":"2026-05-20 16:42:31"}
+{"level":"info","message":"Guards › EURUSDT → CLEAR | drawdown=0.00% atr=0.99× rsi=35 spread=1bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:42:31"}
+{"level":"info","message":"Brain › deciding for EURUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:42:31"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, low RSI (35) signals oversold EUR, tight spread (1bp), low ATR suggests controlled volatility. Conservative 15% position with 2% SL.\"","timestamp":"2026-05-20 16:42:35"}
+{"level":"info","message":"Executor › EURUSDT CLEAR → BUY 15.00% | CLEAR verdict, low RSI (35) signals oversold EUR, tight spread (1bp), low ATR suggests controlled volatility. Conservative 15% position with 2% SL.","timestamp":"2026-05-20 16:42:35"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0xbd5b987967ae4d275f515b9b5b7591b465825f1d022195dea4afbf56ac754cec","timestamp":"2026-05-20 16:42:39"}
+{"level":"info","message":"Cycle › EURUSDT done | oracle=0xbd5b9879 protections=0","timestamp":"2026-05-20 16:42:39"}
+{"level":"info","message":"AgoraGuard cycle #1 complete in 24.4s","timestamp":"2026-05-20 16:42:39"}
+{"level":"info","message":"\n════════════════════════════════════════════════════════════","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"AgoraGuard cycle #2 starting...","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"═══ Monitor cycle starting ═══","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › fetching market snapshot from Binance...","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x3600000000000000000000000000000000000000","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › reading Arc chain state...","timestamp":"2026-05-20 16:43:09"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x3600000000000000000000000000000000000000 — baseline safe","timestamp":"2026-05-20 16:43:09"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a — baseline safe","timestamp":"2026-05-20 16:43:09"}
+{"level":"info","message":"Monitor › BTCUSDT $77006.43 spread 0bps  24h 0.26%","timestamp":"2026-05-20 16:43:10"}
+{"level":"info","message":"Monitor › ETHUSDT $2119.47 spread 0bps  24h 0.13%","timestamp":"2026-05-20 16:43:10"}
+{"level":"info","message":"Monitor › EURUSDT $1.16 spread 1bps  24h -0.14%","timestamp":"2026-05-20 16:43:10"}
+{"level":"info","message":"Monitor › block=43185418 wallets=1 verifiedThreats=0","timestamp":"2026-05-20 16:43:11"}
+{"level":"info","message":"Guards › BTCUSDT → CLEAR | drawdown=0.06% atr=0.95× rsi=54 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:43:11"}
+{"level":"info","message":"Brain › deciding for BTCUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:43:11"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, healthy RSI 54, low drawdown 0.06%, modest +0.255% daily gain. Conservative 15% position with 3% SL given BTC volatility.\"","timestamp":"2026-05-20 16:43:15"}
+{"level":"info","message":"Executor › BTCUSDT CLEAR → BUY 15.00% | CLEAR verdict, healthy RSI 54, low drawdown 0.06%, modest +0.255% daily gain. Conservative 15% position with 3% SL given BTC volatility.","timestamp":"2026-05-20 16:43:15"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0x32bf05997ff32b907908454aba75d927ad97a2f889600d4fbe6c40758ac8e85b","timestamp":"2026-05-20 16:43:19"}
+{"level":"info","message":"Cycle › BTCUSDT done | oracle=0x32bf0599 protections=0","timestamp":"2026-05-20 16:43:19"}
+{"level":"info","message":"Guards › ETHUSDT → CLEAR | drawdown=0.04% atr=0.91× rsi=56 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:43:19"}
+{"level":"info","message":"Brain › deciding for ETHUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:43:19"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, low drawdown 0.04%, healthy RSI 56, positive momentum +0.127%. Conservative 15% position with tight risk mgmt.\"","timestamp":"2026-05-20 16:43:22"}
+{"level":"info","message":"Executor › ETHUSDT CLEAR → BUY 15.00% | CLEAR verdict, low drawdown 0.04%, healthy RSI 56, positive momentum +0.127%. Conservative 15% position with tight risk mgmt.","timestamp":"2026-05-20 16:43:22"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0x17d54913c0fa0ede987023dc0e693acae8d520004162fb2ed2d736e1cb0c9e7c","timestamp":"2026-05-20 16:43:27"}
+{"level":"info","message":"Cycle › ETHUSDT done | oracle=0x17d54913 protections=0","timestamp":"2026-05-20 16:43:27"}
+{"level":"info","message":"Guards › EURUSDT → CLEAR | drawdown=0.00% atr=0.99× rsi=37 spread=1bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:43:27"}
+{"level":"info","message":"Brain › deciding for EURUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:43:27"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, oversold RSI(37), low spread, no threats. Conservative 15% position with tight risk management on EURUSD technical bounce setup.\"","timestamp":"2026-05-20 16:43:30"}
+{"level":"info","message":"Executor › EURUSDT CLEAR → BUY 15.00% | CLEAR verdict, oversold RSI(37), low spread, no threats. Conservative 15% position with tight risk management on EURUSD technical bounce setup.","timestamp":"2026-05-20 16:43:30"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0x2ac3b86e0e34d6100b5c5339d52755ad01f6efc32f6162af67d1e0726efe8313","timestamp":"2026-05-20 16:43:34"}
+{"level":"info","message":"Cycle › EURUSDT done | oracle=0x2ac3b86e protections=0","timestamp":"2026-05-20 16:43:34"}
+{"level":"info","message":"AgoraGuard cycle #2 complete in 25.7s","timestamp":"2026-05-20 16:43:34"}
+{"level":"info","message":"\n════════════════════════════════════════════════════════════","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"AgoraGuard cycle #3 starting...","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"═══ Monitor cycle starting ═══","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"Monitor › fetching market snapshot from Binance...","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x3600000000000000000000000000000000000000","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"Monitor › GoPlus threat check for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"Monitor › reading Arc chain state...","timestamp":"2026-05-20 16:43:39"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:43:39"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x3600000000000000000000000000000000000000 — baseline safe","timestamp":"2026-05-20 16:43:39"}
+{"level":"warn","message":"GoPlus error 4012: signature verification failure","timestamp":"2026-05-20 16:43:40"}
+{"level":"info","message":"Monitor › GoPlus: no data for 0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a — baseline safe","timestamp":"2026-05-20 16:43:40"}
+{"level":"info","message":"Monitor › block=43185477 wallets=1 verifiedThreats=0","timestamp":"2026-05-20 16:43:42"}
+{"level":"info","message":"Monitor › BTCUSDT $77015.83 spread 0bps  24h 0.25%","timestamp":"2026-05-20 16:43:45"}
+{"level":"info","message":"Monitor › ETHUSDT $2119.61 spread 0bps  24h 0.11%","timestamp":"2026-05-20 16:43:45"}
+{"level":"info","message":"Monitor › EURUSDT $1.16 spread 1bps  24h -0.15%","timestamp":"2026-05-20 16:43:45"}
+{"level":"info","message":"Guards › BTCUSDT → CLEAR | drawdown=0.04% atr=0.95× rsi=54 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:43:45"}
+{"level":"info","message":"Brain › deciding for BTCUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:43:45"}
+{"level":"info","message":"Brain › Claude → BUY size=12.00% confidence=75 reason=\"CLEAR verdict, modest +0.25% daily gain, neutral RSI 54, low volatility ATR 0.95x. Conservative 12% position with 3% SL, targeting 8% upside.\"","timestamp":"2026-05-20 16:43:48"}
+{"level":"info","message":"Executor › BTCUSDT CLEAR → BUY 12.00% | CLEAR verdict, modest +0.25% daily gain, neutral RSI 54, low volatility ATR 0.95x. Conservative 12% position with 3% SL, targeting 8% upside.","timestamp":"2026-05-20 16:43:48"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0xfaeb60dca00920de965d6acd6d0cacb6955c4042ca46deab7d4d6bc5eed93234","timestamp":"2026-05-20 16:43:53"}
+{"level":"info","message":"Cycle › BTCUSDT done | oracle=0xfaeb60dc protections=0","timestamp":"2026-05-20 16:43:53"}
+{"level":"info","message":"Guards › ETHUSDT → CLEAR | drawdown=0.03% atr=0.91× rsi=56 spread=0bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:43:53"}
+{"level":"info","message":"Brain › deciding for ETHUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:43:53"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"ETH +0.11% daily, RSI 56 neutral, low ATR 0.91x, no threats detected. Conservative 15% position with 2:1 R/R.\"","timestamp":"2026-05-20 16:43:56"}
+{"level":"info","message":"Executor › ETHUSDT CLEAR → BUY 15.00% | ETH +0.11% daily, RSI 56 neutral, low ATR 0.91x, no threats detected. Conservative 15% position with 2:1 R/R.","timestamp":"2026-05-20 16:43:56"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0xb6fcb0bce5743eec2f7cd2b0e7d9a365a38a0b497baa5b602b8f699ab5c962ac","timestamp":"2026-05-20 16:44:00"}
+{"level":"info","message":"Cycle › ETHUSDT done | oracle=0xb6fcb0bc protections=0","timestamp":"2026-05-20 16:44:00"}
+{"level":"info","message":"Guards › EURUSDT → CLEAR | drawdown=0.01% atr=0.99× rsi=35 spread=1bps threat=0 pos=20.0%","timestamp":"2026-05-20 16:44:00"}
+{"level":"info","message":"Brain › deciding for EURUSDT (verdict=CLEAR)","timestamp":"2026-05-20 16:44:00"}
+{"level":"info","message":"Brain › Claude → BUY size=15.00% confidence=75 reason=\"CLEAR verdict, oversold RSI 35, low volatility (ATR 0.99), tight spreads 1bp, no threats. Conservative entry on EUR strength potential.\"","timestamp":"2026-05-20 16:44:04"}
+{"level":"info","message":"Executor › EURUSDT CLEAR → BUY 15.00% | CLEAR verdict, oversold RSI 35, low volatility (ATR 0.99), tight spreads 1bp, no threats. Conservative entry on EUR strength potential.","timestamp":"2026-05-20 16:44:04"}
+{"level":"info","message":"Executor › RiskGuardOracle verdict recorded: 0x6667953dfaf94d5c3ff452e9338c99072b69b3e66e87ee577db42f6115d001fd","timestamp":"2026-05-20 16:44:07"}
+{"level":"info","message":"Cycle › EURUSDT done | oracle=0x6667953d protections=0","timestamp":"2026-05-20 16:44:07"}
+{"level":"info","message":"AgoraGuard cycle #3 complete in 28.9s","timestamp":"2026-05-20 16:44:07"}
+{"level":"info","message":"Shutting down...","timestamp":"2026-05-20 16:44:08"}
