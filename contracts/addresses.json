@@ -1,0 +1,17 @@
+{
+  "network": "arcTestnet",
+  "deployer": "0x2ec236a1e06715712749bca3c7d242c3b9cae6d7",
+  "guardian": "0x2ec236a1e06715712749BCA3c7D242c3b9caE6D7",
+  "riskGuardOracle": "0x2d101fafb24c660bfef07fd3106caf1074c80bf7",
+  "threatRegistry": "0xef650672437a97a7b987984239064d502f56272d",
+  "guardianVault": "0x8de977504d2bff46ecfd153b10cdb9f22715f988",
+  "deployedAt": "2026-05-20T05:56:53.568Z",
+  "arc": {
+    "usdc": "0x3600000000000000000000000000000000000000",
+    "eurc": "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+    "explorer": "https://testnet.arcscan.app",
+    "faucet": "https://faucet.circle.com",
+    "identityRegistry": "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+    "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713"
+  }
+}
