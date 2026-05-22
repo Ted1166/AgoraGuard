@@ -5,7 +5,6 @@ import { buildSystemPrompt, buildUserMessage } from "./prompt.js";
 import type { GuardVerdict } from "../guards/index.js";
 import type { Ticker } from "../monitor/prices.js";
 import type { TokenThreat } from "../monitor/threats.js";
-import { computeRSI } from "../guards/rsi.js";
 import type { Candle } from "../monitor/prices.js";
 
 export type TradeAction = "BUY" | "SELL" | "HOLD";
@@ -46,7 +45,6 @@ function ruleBasedDecision(
   const sizePct = +(verdict.allowedPositionPct * 100).toFixed(2);
   const isCaution = verdict.verdict === "CAUTION";
 
-  // RSI + momentum rules
   if (rsi < 35 && !isCaution) {
     return {
       action: "BUY", sizePct: sizePct * 0.5,
@@ -84,7 +82,7 @@ async function claudeDecision(
   const client = getClient();
 
   const message = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 512,
     system: buildSystemPrompt(),
     messages: [{

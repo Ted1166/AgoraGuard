@@ -19,21 +19,22 @@ export interface ChainState {
 
 async function readWalletState(address: `0x${string}`): Promise<WalletState> {
   const client = getPublicClient();
+
   const [usdcBalance, isProtected, isCooldownActive] = await Promise.all([
     getUSDCBalance(address),
 
     CONTRACTS.guardianVault
-      ? client.readContract({
+      ? (client.readContract({
           address: CONTRACTS.guardianVault, abi: VAULT_ABI,
           functionName: "isProtected", args: [address],
-        }) as Promise<boolean>
+        }) as Promise<boolean>).catch(() => false)
       : Promise.resolve(false),
 
     CONTRACTS.guardianVault
-      ? client.readContract({
+      ? (client.readContract({
           address: CONTRACTS.guardianVault, abi: VAULT_ABI,
           functionName: "isCooldownActive", args: [address],
-        }) as Promise<boolean>
+        }) as Promise<boolean>).catch(() => false)
       : Promise.resolve(false),
   ]);
 
@@ -65,28 +66,34 @@ export async function fetchChainState(): Promise<ChainState> {
   logger.info("Monitor › reading Arc chain state...");
 
   const client = getPublicClient();
-  const blockNumber = await client.getBlockNumber();
+
+  const [blockNumberResult, ...walletResults] = await Promise.allSettled([
+    client.getBlockNumber(),
+    ...PROTECTED_WALLETS.map(w => readWalletState(w)),
+  ]);
+
+  const blockNumber = blockNumberResult.status === "fulfilled"
+    ? blockNumberResult.value as bigint
+    : 0n;
 
   const wallets: Record<string, WalletState> = {};
-  if (PROTECTED_WALLETS.length > 0) {
-    const walletResults = await Promise.allSettled(
-      PROTECTED_WALLETS.map(w => readWalletState(w))
-    );
-    for (const r of walletResults) {
-      if (r.status === "fulfilled") wallets[r.value.address] = r.value;
+  for (const r of walletResults) {
+    if (r.status === "fulfilled") {
+      const w = r.value as WalletState;
+      wallets[w.address] = w;
     }
   }
-
-  const threatScores: Record<string, number> = {};
-  const verifiedThreats: string[] = [];
 
   const threatResults = await Promise.allSettled(
     MONITORED_TOKENS.map(async (token) => ({
       token,
-      score: await readThreatScore(token),
+      score:    await readThreatScore(token),
       verified: await checkVerifiedThreat(token),
     }))
   );
+
+  const threatScores: Record<string, number> = {};
+  const verifiedThreats: string[] = [];
 
   for (const r of threatResults) {
     if (r.status === "fulfilled") {

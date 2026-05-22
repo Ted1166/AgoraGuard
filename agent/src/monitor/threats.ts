@@ -19,34 +19,38 @@ export interface TokenThreat {
 
 const GOPLUS_BASE = "https://api.gopluslabs.io/api/v1";
 
-const GOPLUS_CHAIN = "56";
+const KNOWN_SAFE_ADDRESSES = new Set([
+  "0x3600000000000000000000000000000000000000",
+  "0x89b50855aa3be2f677cd6303cec089b5f319d72a",
+  "0xe9185f0c5f296ed1797aae4238d26ccabeadb86c",
+]);
 
-interface GoPlusTokenResult {
-  is_honeypot?: string;
-  is_blacklisted?: string;
-  is_mintable?: string;
-  is_open_source?: string;
-  can_take_back_ownership?: string;
-  buy_tax?: string;
-  sell_tax?: string;
-  slippage_modifiable?: string;
-  is_anti_whale?: string;
-  trading_cooldown?: string;
-  owner_change_balance?: string;
-  cannot_buy?: string;
-  cannot_sell_all?: string;
-  transfer_pausable?: string;
+function baselineSafe(tokenAddress: string): TokenThreat {
+  return {
+    address: tokenAddress,
+    goplusScore: 0,
+    isHoneypot: false,
+    isMalicious: false,
+    cannotSell: false,
+    hasBlacklist: false,
+    hasMintFunction: false,
+    ownerCanChange: false,
+    taxBuyPct: 0,
+    taxSellPct: 0,
+    recommendation: "SAFE",
+    rawFlags: [],
+    fetchedAt: Date.now(),
+  };
 }
 
-async function queryGoPlus(
-  tokenAddress: string
-): Promise<GoPlusTokenResult | null> {
+async function checkMaliciousAddress(address: string): Promise<{
+  isMalicious: boolean;
+  tags: string[];
+}> {
   try {
-    const url = `${GOPLUS_BASE}/token_security/${GOPLUS_CHAIN}?contract_addresses=${tokenAddress}`;
-    const headers: Record<string, string> = {
-      "Accept": "application/json",
-    };
-    if (AGENT.goplusKey) {
+    const url = `${GOPLUS_BASE}/address_security/${address}`;
+    const headers: Record<string, string> = { Accept: "application/json" };
+    if (AGENT.goplusKey && AGENT.goplusKey !== "YOUR_GOPLUS_KEY_HERE") {
       headers["Authorization"] = `Bearer ${AGENT.goplusKey}`;
     }
 
@@ -56,51 +60,37 @@ async function queryGoPlus(
     });
 
     if (!res.ok) {
-      logger.warn(`GoPlus HTTP ${res.status} for ${tokenAddress}`);
-      return null;
+      logger.warn(`GoPlus malicious-address HTTP ${res.status} for ${address}`);
+      return { isMalicious: false, tags: [] };
     }
 
     const data = await res.json() as {
       code: number;
       message: string;
-      result: Record<string, GoPlusTokenResult>;
+      result: {
+        malicious_address?: string;
+        malicious_behavior?: string[];
+        tags?: string[];
+      };
     };
 
     if (data.code !== 1) {
-      logger.warn(`GoPlus error ${data.code}: ${data.message}`);
-      return null;
+      logger.warn(`GoPlus address-security error ${data.code}: ${data.message}`);
+      return { isMalicious: false, tags: [] };
     }
 
-    return data.result[tokenAddress.toLowerCase()] ?? null;
+    const result = data.result ?? {};
+    const isMalicious = result.malicious_address === "1";
+    const tags = [
+      ...(result.malicious_behavior ?? []),
+      ...(result.tags ?? []),
+    ];
 
+    return { isMalicious, tags };
   } catch (err) {
-    logger.warn("GoPlus fetch failed", { error: String(err) });
-    return null;
+    logger.warn("GoPlus address-security fetch failed", { error: String(err) });
+    return { isMalicious: false, tags: [] };
   }
-}
-
-function deriveScore(r: GoPlusTokenResult): {
-  score: number;
-  flags: string[];
-} {
-  const flags: string[] = [];
-  let score = 0;
-
-  if (r.is_honeypot === "1") { score += 40; flags.push("honeypot");         }
-  if (r.cannot_sell_all === "1") { score += 30; flags.push("cannot-sell");       }
-  if (r.is_blacklisted === "1") { score += 20; flags.push("blacklist-function");}
-  if (r.is_mintable === "1") { score += 15; flags.push("mintable");          }
-  if (r.can_take_back_ownership === "1") { score += 15; flags.push("ownership-change"); }
-  if (r.transfer_pausable === "1") { score += 10; flags.push("transfer-pausable"); }
-  if (r.owner_change_balance === "1") { score += 10; flags.push("owner-change-balance"); }
-  if (r.slippage_modifiable === "1") { score += 10; flags.push("modifiable-slippage"); }
-
-  const buyTax  = parseFloat(r.buy_tax  ?? "0");
-  const sellTax = parseFloat(r.sell_tax ?? "0");
-  if (buyTax  > 0.10) { score += 10; flags.push(`buy-tax-${(buyTax*100).toFixed(0)}%`);  }
-  if (sellTax > 0.10) { score += 10; flags.push(`sell-tax-${(sellTax*100).toFixed(0)}%`); }
-
-  return { score: Math.min(score, 100), flags };
 }
 
 export async function fetchTokenThreat(
@@ -108,52 +98,38 @@ export async function fetchTokenThreat(
 ): Promise<TokenThreat> {
   logger.info(`Monitor › GoPlus threat check for ${tokenAddress}`);
 
-  const raw = await queryGoPlus(tokenAddress);
-
-  if (!raw) {
-    logger.info(`Monitor › GoPlus: no data for ${tokenAddress} — baseline safe`);
-    return {
-      address: tokenAddress,
-      goplusScore: 0,
-      isHoneypot: false,
-      isMalicious: false,
-      cannotSell: false,
-      hasBlacklist: false,
-      hasMintFunction: false,
-      ownerCanChange: false,
-      taxBuyPct: 0,
-      taxSellPct: 0,
-      recommendation: "SAFE",
-      rawFlags: [],
-      fetchedAt: Date.now(),
-    };
+  if (KNOWN_SAFE_ADDRESSES.has(tokenAddress.toLowerCase())) {
+    logger.info(`Monitor › ${tokenAddress.slice(0, 10)}... is a Circle-issued token - baseline safe`);
+    return baselineSafe(tokenAddress);
   }
 
-  const { score, flags } = deriveScore(raw);
+  const { isMalicious, tags } = await checkMaliciousAddress(tokenAddress);
 
-  const recommendation =
-    score >= RISK.goplusHaltThreshold    ? "HALT"    :
+  const score = isMalicious ? 85 : 0;
+  const recommendation: "SAFE" | "CAUTION" | "HALT" =
+    score >= RISK.goplusHaltThreshold         ? "HALT"    :
     score >= RISK.threatScoreCautionThreshold ? "CAUTION" : "SAFE";
 
   const threat: TokenThreat = {
     address: tokenAddress,
     goplusScore: score,
-    isHoneypot: raw.is_honeypot     === "1",
-    isMalicious: score               >= 60,
-    cannotSell: raw.cannot_sell_all === "1",
-    hasBlacklist: raw.is_blacklisted  === "1",
-    hasMintFunction: raw.is_mintable     === "1",
-    ownerCanChange: raw.can_take_back_ownership === "1",
-    taxBuyPct: parseFloat(raw.buy_tax  ?? "0") * 100,
-    taxSellPct: parseFloat(raw.sell_tax ?? "0") * 100,
+    isHoneypot: false,
+    isMalicious,
+    cannotSell: false,
+    hasBlacklist: false,
+    hasMintFunction: false,
+    ownerCanChange: false,
+    taxBuyPct: 0,
+    taxSellPct: 0,
     recommendation,
-    rawFlags: flags,
+    rawFlags: tags,
     fetchedAt: Date.now(),
   };
 
   logger.info(
-    `Monitor › GoPlus ${tokenAddress.slice(0, 8)}... ` +
-    `score=${score} recommendation=${recommendation} flags=[${flags.join(",")}]`
+    `Monitor › GoPlus ${tokenAddress.slice(0, 10)}... ` +
+    `malicious=${isMalicious} recommendation=${recommendation}` +
+    (tags.length ? ` tags=[${tags.join(",")}]` : "")
   );
 
   return threat;
