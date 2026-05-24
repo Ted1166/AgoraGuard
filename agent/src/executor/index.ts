@@ -1,5 +1,7 @@
 import { writeVerdictOnchain } from "./oracle.js";
 import { executeProtection }  from "./vault.js";
+import { dispatchAlert } from "../alerts/index.js";
+import { ALERTS } from "../alerts/index.js";
 import { logger } from "../utils/logger.js";
 import type { GuardVerdict } from "../guards/index.js";
 import type { TradeDecision } from "../brain/index.js";
@@ -20,6 +22,10 @@ export async function execute(
   );
 
   const oracleTx = await writeVerdictOnchain(verdict);
+
+  if (ALERTS.enabled) {
+    await dispatchAlert(verdict, decision);
+  }
 
   const protections = await executeProtection(verdict, decision);
 
