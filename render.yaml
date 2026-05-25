@@ -1,0 +1,78 @@
+# render.yaml — Render deployment config for AgoraGuard agent
+# Docs: https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: agoraguard-agent
+    runtime: node
+    region: oregon
+    plan: free
+
+    rootDir: agent
+
+    buildCommand: npm install && npm run build
+
+    startCommand: node dist/index.js
+
+    healthCheckPath: /health
+
+    envVars:
+      # Arc RPC — your personal Canteen key
+      - key: ARC_RPC_URL
+        value: https://rpc.testnet.arc-node.thecanteenapp.com/v1/swrm_c6471f0a2d8cfc30dac510f4ee758e1350cde083ccbca4faf1cd56bc3563fece
+
+      # Wallet
+      - key: PRIVATE_KEY
+        sync: false   # set in Render dashboard — never commit
+
+      - key: GUARDIAN_ADDRESS
+        value: 0x2ec236a1e06715712749bca3c7d242c3b9cae6d7
+
+      # Contracts
+      - key: GUARDIAN_VAULT_ADDRESS
+        value: 0x8de977504d2bff46ecfd153b10cdb9f22715f988
+
+      - key: THREAT_REGISTRY_ADDRESS
+        value: 0xef650672437a97a7b987984239064d502f56272d
+
+      - key: RISK_GUARD_ORACLE_ADDRESS
+        value: 0x2d101fafb24c660bfef07fd3106caf1074c80bf7
+
+      # AI
+      - key: ANTHROPIC_API_KEY
+        sync: false   # set in Render dashboard
+
+      # Twilio
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+
+      - key: TWILIO_FROM_PHONE
+        sync: false
+
+      - key: TWILIO_TO_PHONES
+        sync: false   # comma-separated: +1234567890,+0987654321
+
+      # OpenAI (for voice message generation)
+      - key: OPENAI_API_KEY
+        sync: false
+
+      # Shared secret for /test-alert endpoint
+      - key: AGENT_API_KEY
+        sync: false   # set same value in Vercel VITE_AGENT_API_KEY
+
+      # Agent config
+      - key: CYCLE_INTERVAL_SECS
+        value: "30"
+
+      - key: AI_ENABLED
+        value: "true"
+
+      - key: PORT
+        value: "3001"
+
+      # Wallets to monitor/protect
+      - key: PROTECTED_WALLETS
+        value: 0x2ec236a1e06715712749bca3c7d242c3b9cae6d7

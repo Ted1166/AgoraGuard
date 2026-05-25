@@ -3,6 +3,8 @@ import { useArc, type AssetData, type Verdict } from "./hooks/useArc";
 import { useWallet } from "./hooks/useWallet";
 import { ARC, CONTRACTS } from "./config/contracts";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { Landing } from "./components/Landing";
+import { AlertSettings } from "./components/AlertSettings";
 
 const VERDICT_COLOR: Record<Verdict, string> = {
   CLEAR: "var(--clear)",
@@ -126,7 +128,7 @@ function ErrorNotice({ msg, onClose }: { msg: string; onClose: () => void }) {
   );
 }
 
-type Page = "dashboard" | "positions" | "threats" | "log";
+type Page = "dashboard" | "positions" | "threats" | "log" | "alerts";
 
 function Nav({ page, setPage, blockNumber, wallet }: {
   page: Page; setPage: (p: Page) => void;
@@ -158,7 +160,7 @@ function Nav({ page, setPage, blockNumber, wallet }: {
 
       {/* Links */}
       <div style={{ display: "flex", gap: "2px" }}>
-        {(["dashboard","positions","threats","log"] as Page[]).map(id => (
+        {(["dashboard","positions","threats","log", "alerts"] as Page[]).map(id => (
           <button key={id} onClick={() => setPage(id)} style={{
             background: page === id ? "var(--accent-dim)" : "transparent",
             border: page === id ? "1px solid var(--accent)40" : "1px solid transparent",
@@ -167,7 +169,7 @@ function Nav({ page, setPage, blockNumber, wallet }: {
             cursor: "pointer", fontFamily: "var(--sans)",
             fontWeight: 600, fontSize: "13px",
           }}>
-            {id === "log" ? "Guard Log" : id.charAt(0).toUpperCase() + id.slice(1)}
+            {id === "log" ? "Guard Log" : id === "alerts" ? "🔔 Alerts" : id.charAt(0).toUpperCase() + id.slice(1)}
           </button>
         ))}
       </div>
@@ -876,6 +878,9 @@ export default function App() {
   const [page, setPage] = useState<Page>("dashboard");
   const { assets, threats, blockNumber, loading } = useArc(30_000);
   const wallet = useWallet();
+  const [showLanding, setShowLanding] = useState(true);
+
+  if (showLanding) return <Landing onEnter={() => setShowLanding(false)}/> 
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)" }}>
@@ -904,12 +909,14 @@ export default function App() {
             {page === "positions" && "Position Sizing"}
             {page === "threats" && "Threat Registry"}
             {page === "log" && "Guard Decision Log"}
+            {page === "alerts" && "Alert Settings"}
           </h1>
           <p style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text-3)", marginTop: "4px" }}>
             {page === "dashboard" && "Live guard verdicts from Arc Testnet • Auto-refreshes every 30s"}
             {page === "positions" && "Allowed position sizes driven by 5-guard engine"}
             {page === "threats" && "Onchain ThreatRegistry • Report and upvote threats"}
             {page === "log" && "Full history of agent guard decisions from RiskGuardOracle"}
+            {page === "alerts" && "Configure phone call and WhatsApp alerts for HALT events"}
           </p>
         </div>
 
@@ -917,6 +924,7 @@ export default function App() {
         {page === "positions" && <Positions assets={assets} />}
         {page === "threats" && <Threats assets={assets} threats={threats} wallet={wallet} />}
         {page === "log" && <GuardLog assets={assets} />}
+        {page === "alerts" && <AlertSettings walletAddress={wallet.address} />}
       </main>
 
       <footer style={{

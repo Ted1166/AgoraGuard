@@ -1,17 +1,17 @@
-import OpenAI from "openai";
-import { ALERTS } from "./config.js";
+import Anthropic from "@anthropic-ai/sdk";
+import { AGENT } from "../config.js";
 import { logger } from "../utils/logger.js";
 import type { GuardVerdict } from "../guards/index.js";
 import type { TradeDecision } from "../brain/index.js";
 
-let _openai: OpenAI | null = null;
+let _claude: Anthropic | null = null;
 
-function getClient(): OpenAI | null {
-  if (!ALERTS.openaiKey) return null;
-  if (!_openai) {
-    _openai = new OpenAI({ apiKey: ALERTS.openaiKey });
+function getClient(): Anthropic | null {
+  if (!AGENT.anthropicKey) return null;
+  if (!_claude) {
+    _claude = new Anthropic({ apiKey: AGENT.anthropicKey });
   }
-  return _openai;
+  return _claude;
 }
 
 function buildVoicePrompt(verdict: GuardVerdict, decision: TradeDecision, textMessage: string): string {
@@ -42,40 +42,36 @@ export async function getVoiceMessage(
   textMessage: string,
 ): Promise<string> {
   const client = getClient();
-
-  if (!client) {
-    return buildFallbackVoice(verdict, decision, textMessage);
-  }
+  if (!client) return buildFallbackVoice(verdict, decision);
 
   try {
-    const response = await client.chat.completions.create({
-      model: ALERTS.model,
-      messages: [
-        { role: "user", content: buildVoicePrompt(verdict, decision, textMessage) },
-      ],
+    const response = await client.messages.create({
+      model: "claude-sonnet-4-6",
       max_tokens: 150,
-      temperature: 0.3,
+      messages: [{
+        role: "user",
+        content: buildVoicePrompt(verdict, decision, textMessage),
+      }],
     });
 
-    const text = response.choices[0]?.message?.content?.trim();
-    return text || buildFallbackVoice(verdict, decision, textMessage);
+    const text = response.content
+      .filter(b => b.type === "text")
+      .map(b => (b as { type: "text"; text: string }).text)
+      .join("").trim();
+
+    return text || buildFallbackVoice(verdict, decision);
   } catch (err) {
-    logger.warn("Alerts › OpenAI voice prompt failed — using fallback", { error: String(err).slice(0, 100) });
-    return buildFallbackVoice(verdict, decision, textMessage);
+    logger.warn("Alerts › Claude voice prompt failed — using fallback", { error: String(err).slice(0, 100) });
+    return buildFallbackVoice(verdict, decision);
   }
 }
 
-function buildFallbackVoice(
-  verdict: GuardVerdict,
-  _decision: TradeDecision,
-  _textMessage: string,
-): string {
+function buildFallbackVoice(verdict: GuardVerdict, decision: TradeDecision): string {
   if (verdict.verdict === "HALT") {
     return `This is AgoraGuard with a critical alert. A halt has been triggered for ${verdict.symbol}. ` +
       `All trading has been paused and your funds have been moved to the Guardian Vault for safety. ` +
       `No action is needed. Check your dashboard for details.`;
   }
-
   return `This is AgoraGuard with a risk alert. Multiple caution flags have been raised for ${verdict.symbol}. ` +
     `Position sizes have been reduced automatically. Please review your portfolio. ` +
     `Check your dashboard for details.`;
